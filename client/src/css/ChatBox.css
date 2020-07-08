@@ -1,0 +1,48 @@
+.ChatBox {
+  background: #444753;
+  width: 35vw;
+  height: 100vh;
+  position: relative;
+  padding: 1em 2em;
+  /* &__chat {
+    display: flex;
+    flex-direction: column;
+  } */
+}
+
+.ChatBox__form {
+  position: absolute;
+  bottom: 20px;
+  width: 90%;
+}
+
+.ChatBox__form form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ChatBox__form input {
+  width: 80%;
+  height: 6vh;
+  border: none;
+  padding: 1rem;
+  font-size: 1.6rem;
+  border-radius: 4rem;
+  font-family: "Roboto", sans-serif;
+}
+
+.ChatBox__form button {
+  padding: 1rem 2rem;
+  font-size: 1.7rem;
+  border-radius: 3rem;
+  letter-spacing: 0.1rem;
+  background: #1485f7;
+}
+/*# sourceMappingURL=ChatBox.css.map */

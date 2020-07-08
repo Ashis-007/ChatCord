@@ -15,11 +15,6 @@ const SignUpForm = () => {
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(true); // prop for Snackbar
 
-  // context
-  const [user, setUser] = useContext(Context);
-
-  const db = firebase.firestore();
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -32,7 +27,6 @@ const SignUpForm = () => {
         setSuccess(true);
 
         const uid = user.uid;
-        setUser({ uid, username });
 
         // reset state
         setEmail("");
@@ -40,8 +34,6 @@ const SignUpForm = () => {
         setPassword("");
 
         console.log(user);
-
-        <Redirect to="" />;
       })
       .catch((err) => {
         setError(err.message);

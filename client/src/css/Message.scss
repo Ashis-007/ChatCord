@@ -1,0 +1,21 @@
+$senderColor: dodgerBlue;
+$receiverColor: #43d3c5;
+// $receiverColor: #86bb71;
+
+.Message {
+  width: 15vw;
+  color: #fff;
+  padding: 1rem 1rem;
+  margin: 0 1em 2em;
+  font-size: 1.6rem;
+  border-radius: 0.7rem;
+  word-wrap: break-word;
+}
+
+.Message.recieved {
+  background: $receiverColor;
+}
+
+.Message.sent {
+  background: $senderColor;
+}

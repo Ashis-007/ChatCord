@@ -1,0 +1,44 @@
+$background: #444753;
+
+.ChatBox {
+  background: $background;
+  width: 35vw;
+  height: 100vh;
+  position: relative;
+  padding: 1em 2em;
+
+  /* &__chat {
+    display: flex;
+    flex-direction: column;
+  } */
+
+  &__form {
+    position: absolute;
+    bottom: 20px;
+    width: 90%;
+
+    form {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+
+    input {
+      width: 80%;
+      height: 6vh;
+      border: none;
+      padding: 1rem;
+      font-size: 1.6rem;
+      border-radius: 4rem;
+      font-family: "Roboto", sans-serif;
+    }
+
+    button {
+      padding: 1rem 2rem;
+      font-size: 1.7rem;
+      border-radius: 3rem;
+      letter-spacing: 0.1rem;
+      background: rgb(20, 133, 247);
+    }
+  }
+}

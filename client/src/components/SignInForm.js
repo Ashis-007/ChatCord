@@ -13,15 +13,12 @@ const SignInForm = () => {
   const [error, setError] = useState("");
   const [open, setOpen] = useState(true); // prop for Snackbar
 
-  const [user, setUser] = useContext(Context);
-
   const handleLogin = (e) => {
     e.preventDefault();
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(({ user }) => {
-        setUser({ uid: user.uid });
         // reset state
         setEmail("");
         setPassword("");
