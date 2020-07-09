@@ -5,16 +5,15 @@ import SignInForm from "./components/SignInForm";
 import Profile from "./components/Profile";
 import ChatBox from "./components/ChatBox";
 
-import UserProvider from "./context/UserProvider";
+import ProtectedRoute from "./helper/ProtectedRoute";
 
 const Routes = () => {
   return (
     <Router>
       <Switch>
-        <UserProvider>
-          <Route exact path="/signup" component={SignUpForm} />
-          <Route exact path="/signin" component={SignInForm} />
-        </UserProvider>
+        <Route exact path="/signup" component={SignUpForm} />
+        <Route exact path="/signin" component={SignInForm} />
+        <ProtectedRoute exact path="/chatbox" component={ChatBox} />
       </Switch>
     </Router>
   );

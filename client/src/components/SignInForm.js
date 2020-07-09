@@ -1,17 +1,25 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { TextField, Button, Typography, Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/database";
 
 import Context from "../context/Context";
 
-const SignInForm = () => {
+const SignInForm = (props) => {
+  // Context
+  const [user, setUser] = useContext(Context);
+  const [isAuthenticated, setIsAuthenticated] = useContext(Context);
+
+  // State
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [open, setOpen] = useState(true); // prop for Snackbar
+
+  const database = firebase.database();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -19,9 +27,26 @@ const SignInForm = () => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(({ user }) => {
-        // reset state
-        setEmail("");
-        setPassword("");
+        const uid = user.uid;
+
+        // TODO: ✔ fetch user from DB
+        // TODO: ✔ add user to context
+        // TODO: ✔ change isAuthenticated
+        // TODO: redirect to chatbox
+        database
+          .ref("/users/" + uid)
+          .once("value")
+          .then((snapshot) => {
+            if (snapshot.val()) {
+              const username = snapshot.val().username;
+              const email = snapshot.val().email;
+              setUser({ uid, username, email });
+              setIsAuthenticated(true);
+              props.history.push("/chatbox");
+            } else {
+              console.log(snapshot);
+            }
+          });
       })
       .catch((err) => {
         setError(err.message);
@@ -48,6 +73,16 @@ const SignInForm = () => {
       );
     }
   };
+
+  useEffect(() => {
+    return () => {
+      // reset state
+      setEmail("");
+      setPassword("");
+      setError("");
+      setOpen(true);
+    };
+  }, []);
 
   return (
     <div className="SignInForm">

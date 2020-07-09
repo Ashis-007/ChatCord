@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Route, Redirect } from "react-router-dom";
+import Context from "../context/Context";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   //TODO: Check authentication
+  const [isAuthenticated, setIsAuthenticated] = useContext(Context);
   return (
     <Route
       {...rest}
       render={(props) =>
-        isAuthenticated() ? (
+        isAuthenticated ? (
           <Component {...props} />
         ) : (
           <Redirect
@@ -15,7 +17,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
           />
         )
       }
-    ></Route>
+    />
   );
 };
 

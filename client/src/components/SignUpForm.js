@@ -1,19 +1,26 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { TextField, Button, Typography, Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
 import firebase from "firebase/app";
 import "firebase/auth";
-import { Redirect } from "react-router-dom";
+import "firebase/database";
 import Context from "../context/Context";
 
-const SignUpForm = () => {
+const SignUpForm = (props) => {
+  // Context
+  const [user, setUser] = useContext(Context);
+  const [isAuthenticated, setIsAuthenticated] = useContext(Context);
+
+  // State
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(true); // prop for Snackbar
+
+  const database = firebase.database();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,12 +35,23 @@ const SignUpForm = () => {
 
         const uid = user.uid;
 
-        // reset state
-        setEmail("");
-        setUsername("");
-        setPassword("");
+        // TODO: ✔ save user in DB and add user to context
+        database
+          .ref("users/" + uid)
+          .set({
+            uid,
+            username,
+            email,
+          })
+          .then((response) => console.log(response))
+          .catch((err) => console.log(err.message));
+        setUser({ uid, username, email });
 
-        console.log(user);
+        // TODO: ✔ change isAuthenticated
+        setIsAuthenticated(true);
+
+        // Redirect to chatbox
+        props.history.push("/chatbox");
       })
       .catch((err) => {
         setError(err.message);
@@ -51,7 +69,10 @@ const SignUpForm = () => {
           open={open}
           autoHideDuration={6000}
           onClose={handleClose}
-          anchorOrigin={{ horizontal: "center", vertical: "top" }}
+          anchorOrigin={{
+            horizontal: "center",
+            vertical: "top",
+          }}
         >
           <Alert onClose={handleClose} severity="success">
             Account created successfully!
@@ -68,7 +89,10 @@ const SignUpForm = () => {
           open={open}
           autoHideDuration={6000}
           onClose={handleClose}
-          anchorOrigin={{ horizontal: "center", vertical: "top" }}
+          anchorOrigin={{
+            horizontal: "center",
+            vertical: "top",
+          }}
         >
           <Alert onClose={handleClose} severity="error">
             {error}
@@ -77,6 +101,18 @@ const SignUpForm = () => {
       );
     }
   };
+
+  useEffect(() => {
+    return () => {
+      // reset state
+      setEmail("");
+      setUsername("");
+      setPassword("");
+      setError("");
+      setSuccess(false);
+      setOpen(true);
+    };
+  }, []);
 
   return (
     <div className="SignUpForm">

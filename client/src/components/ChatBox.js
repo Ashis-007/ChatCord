@@ -1,19 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { TextField, Button, Container, Grid } from "@material-ui/core";
+import React, { useState, useEffect, useContext } from "react";
+import { TextField, Button } from "@material-ui/core";
 import socket from "../service/socket";
 import Message from "./Message";
 
 import "../css/ChatBox.css";
 
-function ChatBox() {
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/database";
+
+import Context from "../context/Context";
+
+function ChatBox(props) {
+  // Context
+  const [user, setUser] = useContext(Context);
+  const [isAuthenticated, setIsAuthenticated] = useContext(Context);
+
+  // State
   const [message, setMessage] = useState("");
   const [allMessages, setAllMessages] = useState([]);
 
   useEffect(() => {
     const textField = document.getElementById("textField");
-    textField.addEventListener("keypress", () => {
+    const handler = () => {
       socket.emit("typing", "An user is typing ...");
-    });
+    };
+    textField.addEventListener("keypress", handler);
 
     // listen for msgs from server
     socket.on("message", (message) => {
@@ -25,6 +37,14 @@ function ChatBox() {
     socket.on("typing", (msg) => {
       // console.log(msg);
     });
+
+    return () => {
+      textField.removeEventListener("keypress", handler);
+      socket.off("message");
+      socket.off("typing");
+      socket.disconnect();
+      console.log("Socket Disconnected:", socket.disconnected);
+    };
   }, []);
 
   const handleSubmit = (e) => {
@@ -32,6 +52,22 @@ function ChatBox() {
     socket.emit("message", message);
     setAllMessages((msgs) => [...msgs, message]);
     setMessage("");
+  };
+
+  const handleSignOut = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        setUser(null);
+        setIsAuthenticated(false);
+
+        setMessage("");
+        setAllMessages([]);
+
+        props.history.push("/signin");
+      })
+      .catch((err) => console.log(err.message));
   };
 
   return (
@@ -55,6 +91,9 @@ function ChatBox() {
           </Button>
         </form>
       </div>
+      <Button variant="outlined" onClick={handleSignOut}>
+        Sign Out
+      </Button>
     </div>
   );
 }
