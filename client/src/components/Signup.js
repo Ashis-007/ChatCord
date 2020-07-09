@@ -1,11 +1,15 @@
 import React, { useState, useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { TextField, Button, Typography, Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
+
 import Context from "../context/Context";
+
+import "../css/Signup.css";
 
 const SignUpForm = (props) => {
   // Context
@@ -115,52 +119,54 @@ const SignUpForm = (props) => {
   }, []);
 
   return (
-    <div className="SignUpForm">
-      <Typography variant="h2">Sign Up</Typography>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <TextField
-            variant="standard"
-            type="email"
-            name="email"
-            label="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            fullWidth
-            style={{ width: "40%" }}
-          />
-        </div>
-        <div>
-          <TextField
-            variant="standard"
+    <div className="form__container">
+      <h2 className="form__heading">Register</h2>
+      <form>
+        <div className="">
+          <label className="">Username</label>
+          <input
+            className=""
             type="text"
-            name="username"
-            label="Username"
-            value={username}
             onChange={(e) => setUsername(e.target.value)}
+            value={username}
             required
-            style={{ width: "40%" }}
+            placeholder="Username"
           />
         </div>
-        <div>
-          <TextField
-            variant="standard"
+        <div className="">
+          <label className="text-light">Email</label>
+          <input
+            className=""
+            type="text"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            required
+            placeholder="Email"
+          />
+        </div>
+        <div className="form-group">
+          <label className="text-light">Password</label>
+          <input
+            className=""
             type="password"
-            name="password"
-            label="Password"
-            value={password}
             onChange={(e) => setPassword(e.target.value)}
+            value={password}
             required
-            style={{ width: "40%" }}
+            placeholder="Password"
           />
         </div>
-        <Button type="submit" variant="contained" color="primary">
+        <button onClick={handleSubmit} className="btn submit">
           Sign Up
-        </Button>
+        </button>
       </form>
-      {errorMsg()}
-      {successMsg()}
+      <div className="other">
+        <p>
+          Already have an account?{" "}
+          <Link to="/signin" className="link">
+            Log in
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

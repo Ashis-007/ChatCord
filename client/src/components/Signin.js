@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { TextField, Button, Typography, Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
@@ -7,6 +8,8 @@ import "firebase/auth";
 import "firebase/database";
 
 import Context from "../context/Context";
+
+import "../css/Signin.css";
 
 const SignInForm = (props) => {
   // Context
@@ -38,6 +41,7 @@ const SignInForm = (props) => {
           .once("value")
           .then((snapshot) => {
             if (snapshot.val()) {
+              console.log(snapshot.val());
               const username = snapshot.val().username;
               const email = snapshot.val().email;
               setUser({ uid, username, email });
@@ -85,35 +89,44 @@ const SignInForm = (props) => {
   }, []);
 
   return (
-    <div className="SignInForm">
-      <form onSubmit={handleLogin}>
-        <div>
-          <TextField
-            variant="standard"
-            type="email"
-            name="email"
-            label="Email"
-            value={email}
+    <div className="form__container">
+      <h2 className="form__heading">Login</h2>
+
+      <form>
+        <div className="">
+          <label className="">Email</label>
+          <input
+            className=""
+            type="text"
             onChange={(e) => setEmail(e.target.value)}
+            value={email}
             required
+            placeholder="Email"
           />
         </div>
-        <div>
-          <TextField
-            variant="standard"
+        <div className="">
+          <label className="">Password</label>
+          <input
+            className=""
             type="password"
-            name="password"
-            label="Password"
-            value={password}
             onChange={(e) => setPassword(e.target.value)}
+            value={password}
             required
+            placeholder="Password"
           />
         </div>
-        <Button type="submit" variant="contained" color="primary">
-          Sign In
-        </Button>
+        <button onClick={handleLogin} className="btn submit">
+          Login
+        </button>
       </form>
-      {errorMsg()}
+      <div className="other">
+        <p>
+          Don't have an account?{" "}
+          <Link to="/signup" className="link">
+            Sign Up
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

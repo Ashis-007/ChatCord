@@ -4,7 +4,7 @@ import Context from "../context/Context";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   //TODO: Check authentication
-  const [isAuthenticated, setIsAuthenticated] = useContext(Context);
+  const [isAuthenticated] = useContext(Context);
   return (
     <Route
       {...rest}

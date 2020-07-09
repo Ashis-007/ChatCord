@@ -13,11 +13,11 @@ const io = socketIo(server);
 io.on("connection", (socket) => {
   socket.removeAllListeners();
   console.log("A user is connected!", socket.id);
-  socket.on("message", (msg) => {
-    console.log("Client: ", msg);
+  socket.on("message", (data) => {
+    console.log("Client: ", data);
     // send msg to all the clients
     // connected to this socket
-    socket.broadcast.emit("message", msg);
+    socket.broadcast.emit("message", data.message);
   });
 
   socket.on("typing", (msg) => {

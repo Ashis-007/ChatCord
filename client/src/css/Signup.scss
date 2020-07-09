@@ -1,0 +1,87 @@
+.form__heading {
+  text-align: center;
+  font-size: 3rem;
+  margin: 1.5em;
+  font-family: "Montserrat", sans-serif;
+}
+
+.form__container {
+  width: 90%;
+  height: 80vh;
+  margin: auto;
+  text-align: center;
+  position: relative;
+
+  label {
+    display: none;
+  }
+
+  input {
+    width: 90%;
+    height: 40px;
+    margin: 0.7em;
+    background: #eee;
+    border-radius: 5px;
+    padding: 0.5em;
+    font-size: 1.7rem;
+    transition: ease-in;
+    font-weight: 500;
+
+    font-family: "Roboto", sans-serif;
+
+    &:focus {
+      border: 2px solid dodgerblue;
+    }
+  }
+
+  .submit {
+    width: 70%;
+    padding: 1rem 2rem;
+    margin: 2rem;
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 600;
+    border-radius: 2rem;
+    background-image: linear-gradient(
+      to right,
+      #da22ff 0%,
+      #9733ee 51%,
+      #da22ff 100%
+    );
+    transition: 0.3s ease-in;
+
+    &:hover {
+      background-position: right center;
+    }
+  }
+
+  .other {
+    margin: 2.5em auto;
+    p {
+      font-size: 1.6rem;
+    }
+
+    .link {
+      text-decoration: underline;
+    }
+  }
+}
+
+@media (min-width: 900px) {
+  .form__heading {
+    font-size: 4rem;
+  }
+
+  .form__container {
+    width: 45%;
+    height: auto;
+    margin-top: 2rem;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 10px 13px 30px -10px rgba(150, 170, 180, 0.5);
+
+    .submit {
+      width: 40%;
+    }
+  }
+}

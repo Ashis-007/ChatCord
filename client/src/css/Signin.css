@@ -1,0 +1,85 @@
+.form__heading {
+  text-align: center;
+  font-size: 3rem;
+  margin: 1em;
+  font-family: "Montserrat", sans-serif;
+}
+
+.form__container {
+  width: 90%;
+  height: 80vh;
+  margin: auto;
+  text-align: center;
+  position: relative;
+}
+
+.form__container label {
+  display: none;
+}
+
+.form__container input {
+  width: 90%;
+  height: 40px;
+  margin: 0.7em;
+  background: #eee;
+  border-radius: 5px;
+  padding: 0.5em;
+  font-size: 1.7rem;
+  -webkit-transition: ease-in;
+  transition: ease-in;
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+}
+
+.form__container input:focus {
+  border: 2px solid dodgerblue;
+}
+
+.form__container .submit {
+  width: 70%;
+  padding: 1rem 2rem;
+  margin: 2rem;
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 600;
+  border-radius: 2rem;
+  background-image: -webkit-gradient(linear, left top, right top, from(#da22ff), color-stop(51%, #9733ee), to(#da22ff));
+  background-image: linear-gradient(to right, #da22ff 0%, #9733ee 51%, #da22ff 100%);
+  -webkit-transition: 0.3s ease-in;
+  transition: 0.3s ease-in;
+}
+
+.form__container .submit:hover {
+  background-position: right center;
+}
+
+.form__container .other {
+  margin: 3.5em auto;
+}
+
+.form__container .other p {
+  font-size: 1.6rem;
+}
+
+.form__container .other .link {
+  text-decoration: underline;
+}
+
+@media (min-width: 900px) {
+  .form__heading {
+    font-size: 4rem;
+  }
+  .form__container {
+    width: 45%;
+    height: auto;
+    margin-top: 2rem;
+    padding: 2rem;
+    border-radius: 20px;
+    -webkit-box-shadow: 10px 13px 30px -10px rgba(150, 170, 180, 0.5);
+            box-shadow: 10px 13px 30px -10px rgba(150, 170, 180, 0.5);
+  }
+  .form__container .submit {
+    width: 40%;
+  }
+}
+/*# sourceMappingURL=Signin.css.map */

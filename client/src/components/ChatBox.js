@@ -49,7 +49,9 @@ function ChatBox(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("message", message);
+
+    const data = { message, author: user };
+    socket.emit("message", data);
     setAllMessages((msgs) => [...msgs, message]);
     setMessage("");
   };
