@@ -7,14 +7,15 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 
-import Context from "../context/Context";
+import UserContext from "../context/UserContext";
+import AuthContext from "../context/AuthContext";
 
 import "../css/Signin.css";
 
 const SignInForm = (props) => {
   // Context
-  const [user, setUser] = useContext(Context);
-  const [isAuthenticated, setIsAuthenticated] = useContext(Context);
+  const [user, setUser] = useContext(UserContext);
+  const [isAuthenticated, setIsAuthenticated] = useContext(AuthContext);
 
   // State
   const [email, setEmail] = useState("");
@@ -41,10 +42,7 @@ const SignInForm = (props) => {
           .once("value")
           .then((snapshot) => {
             if (snapshot.val()) {
-              console.log(snapshot.val());
-              const username = snapshot.val().username;
-              const email = snapshot.val().email;
-              setUser({ uid, username, email });
+              setUser(snapshot.val());
               setIsAuthenticated(true);
               props.history.push("/chatbox");
             } else {
@@ -80,6 +78,7 @@ const SignInForm = (props) => {
 
   useEffect(() => {
     return () => {
+      console.log(user);
       // reset state
       setEmail("");
       setPassword("");

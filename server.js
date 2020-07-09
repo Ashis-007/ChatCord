@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
     console.log("Client: ", data);
     // send msg to all the clients
     // connected to this socket
-    socket.broadcast.emit("message", data.message);
+    socket.broadcast.emit("message", data);
   });
 
   socket.on("typing", (msg) => {

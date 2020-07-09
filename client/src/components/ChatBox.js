@@ -9,12 +9,13 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 
-import Context from "../context/Context";
+import UserContext from "../context/UserContext";
+import AuthContext from "../context/AuthContext";
 
 function ChatBox(props) {
   // Context
-  const [user, setUser] = useContext(Context);
-  const [isAuthenticated, setIsAuthenticated] = useContext(Context);
+  const [user, setUser] = useContext(UserContext);
+  const [, setIsAuthenticated] = useContext(AuthContext);
 
   // State
   const [message, setMessage] = useState("");
@@ -28,9 +29,9 @@ function ChatBox(props) {
     textField.addEventListener("keypress", handler);
 
     // listen for msgs from server
-    socket.on("message", (message) => {
-      console.log(message);
-      setAllMessages((msgs) => [...msgs, message]);
+    socket.on("message", (data) => {
+      console.log(data);
+      setAllMessages((msgs) => [...msgs, data]);
     });
 
     // listen for typing events
@@ -52,7 +53,7 @@ function ChatBox(props) {
 
     const data = { message, author: user };
     socket.emit("message", data);
-    setAllMessages((msgs) => [...msgs, message]);
+    setAllMessages((msgs) => [...msgs, data]);
     setMessage("");
   };
 
@@ -61,7 +62,7 @@ function ChatBox(props) {
       .auth()
       .signOut()
       .then(() => {
-        setUser(null);
+        setUser({});
         setIsAuthenticated(false);
 
         setMessage("");
@@ -75,8 +76,8 @@ function ChatBox(props) {
   return (
     <div className="ChatBox">
       <div className="ChatBox__chat">
-        {allMessages.map((message, index) => (
-          <Message msg={message} key={index} />
+        {allMessages.map((data, index) => (
+          <Message data={data} key={index} />
         ))}
       </div>
 

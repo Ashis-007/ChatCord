@@ -7,14 +7,15 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 
-import Context from "../context/Context";
+import UserContext from "../context/UserContext";
+import AuthContext from "../context/AuthContext";
 
 import "../css/Signup.css";
 
 const SignUpForm = (props) => {
   // Context
-  const [user, setUser] = useContext(Context);
-  const [isAuthenticated, setIsAuthenticated] = useContext(Context);
+  const [user, setUser] = useContext(UserContext);
+  const [isAuthenticated, setIsAuthenticated] = useContext(AuthContext);
 
   // State
   const [email, setEmail] = useState("");
