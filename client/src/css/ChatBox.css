@@ -1,6 +1,7 @@
 .ChatBox {
   background: #444753;
   width: 35vw;
+  min-width: 450px;
   height: 100vh;
   position: relative;
   padding: 1em 2em;
@@ -32,17 +33,36 @@
   width: 80%;
   height: 6vh;
   border: none;
-  padding: 1rem;
-  font-size: 1.6rem;
+  padding: 1rem 2rem;
+  font-size: 1.7rem;
   border-radius: 4rem;
   font-family: "Roboto", sans-serif;
 }
 
 .ChatBox__form button {
+  min-width: 50px;
+  min-height: 50px;
+  font-size: 2rem;
+  border-radius: 50%;
+  padding: 1rem;
+  background: #1485f7;
+}
+
+.btn.signout {
   padding: 1rem 2rem;
   font-size: 1.7rem;
+  border: 2px solid red;
   border-radius: 3rem;
-  letter-spacing: 0.1rem;
-  background: #1485f7;
+  color: red;
+  -webkit-transition: 0.3s ease-out;
+  transition: 0.3s ease-out;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.btn.signout:hover {
+  background: red;
+  color: white;
 }
 /*# sourceMappingURL=ChatBox.css.map */

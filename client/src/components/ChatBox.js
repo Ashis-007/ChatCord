@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
+import { Redirect } from "react-router-dom";
 import { TextField, Button } from "@material-ui/core";
 import socket from "../service/socket";
+import moment from "moment";
 import Message from "./Message";
 
 import "../css/ChatBox.css";
@@ -15,11 +17,30 @@ import AuthContext from "../context/AuthContext";
 function ChatBox(props) {
   // Context
   const [user, setUser] = useContext(UserContext);
-  const [, setIsAuthenticated] = useContext(AuthContext);
+  const [isAuthenticated, setIsAuthenticated] = useContext(AuthContext);
 
   // State
   const [message, setMessage] = useState("");
   const [allMessages, setAllMessages] = useState([]);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((currentUser) => {
+      if (currentUser) {
+        const uid = currentUser.uid;
+        // TODO: fetch user from DB
+        firebase
+          .database()
+          .ref("/users/" + uid)
+          .once("value")
+          .then((snapshot) => setUser(snapshot.val()))
+          .catch((err) => console.log(err.message));
+        setIsAuthenticated(true);
+        return <Redirect to="/chatcord" />;
+      } else {
+        return <Redirect to="/signin" />;
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const textField = document.getElementById("textField");
@@ -51,10 +72,14 @@ function ChatBox(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const data = { message, author: user };
-    socket.emit("message", data);
-    setAllMessages((msgs) => [...msgs, data]);
-    setMessage("");
+    if (message) {
+      const day = moment().format("DD MMMM YYYY");
+      const time = moment().format("h:mm a");
+      const data = { message, day, time, author: user };
+      socket.emit("message", data);
+      setAllMessages((msgs) => [...msgs, data]);
+      setMessage("");
+    }
   };
 
   const handleSignOut = () => {
@@ -77,7 +102,11 @@ function ChatBox(props) {
     <div className="ChatBox">
       <div className="ChatBox__chat">
         {allMessages.map((data, index) => (
-          <Message data={data} key={index} />
+          <Message
+            data={data}
+            key={index}
+            isReceived={data.author.uid === user.uid ? false : true}
+          />
         ))}
       </div>
 
@@ -90,13 +119,13 @@ function ChatBox(props) {
             id="textField"
           />
           <Button type="submit" variant="contained" color="primary">
-            Send
+            <i className="fas fa-paper-plane"></i>
           </Button>
         </form>
       </div>
-      <Button variant="outlined" onClick={handleSignOut}>
+      <button className="btn signout" onClick={handleSignOut}>
         Sign Out
-      </Button>
+      </button>
     </div>
   );
 }

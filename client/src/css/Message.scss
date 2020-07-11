@@ -1,21 +1,33 @@
 $senderColor: dodgerBlue;
 $receiverColor: #43d3c5;
-// $receiverColor: #86bb71;
+$receiverColor: #86bb71;
+$receiverColor: #65c240;
 
 .Message {
-  width: 15vw;
+  width: fit-content;
+  max-width: 20vw;
   color: #fff;
   padding: 1rem 1rem;
   margin: 0 1em 2em;
-  font-size: 1.6rem;
+  font-size: 1.7rem;
   border-radius: 0.7rem;
   word-wrap: break-word;
-}
+  position: relative;
 
-.Message.recieved {
-  background: $receiverColor;
-}
+  &__message {
+    margin-bottom: 1.5rem;
+  }
 
-.Message.sent {
-  background: $senderColor;
+  &__author {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 0.7rem;
+  }
+
+  &__time {
+    font-size: 1.4rem;
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+  }
 }
