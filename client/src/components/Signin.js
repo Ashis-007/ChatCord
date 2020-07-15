@@ -1,21 +1,17 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { TextField, Button, Typography, Snackbar } from "@material-ui/core";
+import { Link, Redirect } from "react-router-dom";
+import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/database";
+import firebase from "../firebase";
 
 import UserContext from "../context/UserContext";
-import AuthContext from "../context/AuthContext";
 
 import "../css/Signin.css";
 
 const SignInForm = (props) => {
   // Context
   const [user, setUser] = useContext(UserContext);
-  const [isAuthenticated, setIsAuthenticated] = useContext(AuthContext);
 
   // State
   const [email, setEmail] = useState("");
@@ -23,37 +19,26 @@ const SignInForm = (props) => {
   const [error, setError] = useState("");
   const [open, setOpen] = useState(true); // prop for Snackbar
 
-  const database = firebase.database();
+  // const database = firebase.database();
 
-  const handleLogin = (e) => {
+  const handleSignin = async (e) => {
     e.preventDefault();
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(({ user }) => {
-        const uid = user.uid;
+    try {
+      const currentUser = await firebase.signin(email, password);
+      const uid = currentUser.uid;
+      const email = currentUser.email;
+      const username = currentUser.displayName;
+      setUser({ uid, email, username });
 
-        // TODO: ✔ fetch user from DB
-        // TODO: ✔ add user to context
-        // TODO: ✔ change isAuthenticated
-        // TODO: redirect to chatbox
-        database
-          .ref("/users/" + uid)
-          .once("value")
-          .then((snapshot) => {
-            if (snapshot.val()) {
-              setUser(snapshot.val());
-              setIsAuthenticated(true);
-              props.history.push("/chatbox");
-            } else {
-              console.log(snapshot);
-            }
-          });
-      })
-      .catch((err) => {
-        setError(err.message);
-      });
+      props.history.push("/chatbox");
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   const handleClose = () => {
     setOpen(false);
@@ -87,47 +72,60 @@ const SignInForm = (props) => {
     };
   }, []);
 
-  return (
-    <div className="form__container">
-      <h2 className="form__heading">Login</h2>
+  const signInForm = () => {
+    return (
+      <div className="form__container">
+        <h2 className="form__heading">Login</h2>
 
-      <form>
-        <div className="">
-          <label className="">Email</label>
-          <input
-            className=""
-            type="text"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            required
-            placeholder="Email"
-          />
+        <form onSubmit={handleSignin}>
+          <div className="">
+            <label className="">Email</label>
+            <input
+              className=""
+              type="text"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              required
+              placeholder="Email"
+            />
+          </div>
+          <div className="">
+            <label className="">Password</label>
+            <input
+              className=""
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              required
+              placeholder="Password"
+            />
+          </div>
+          <button type="submit" onClick={handleSignin} className="btn submit">
+            Login
+          </button>
+        </form>
+        <div className="other">
+          <p>
+            Don't have an account?{" "}
+            <Link to="/signup" className="link">
+              Sign Up
+            </Link>
+          </p>
         </div>
-        <div className="">
-          <label className="">Password</label>
-          <input
-            className=""
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            required
-            placeholder="Password"
-          />
-        </div>
-        <button onClick={handleLogin} className="btn submit">
-          Login
-        </button>
-      </form>
-      <div className="other">
-        <p>
-          Don't have an account?{" "}
-          <Link to="/signup" className="link">
-            Sign Up
-          </Link>
-        </p>
       </div>
-    </div>
-  );
+    );
+  };
+
+  if (!user) {
+    return (
+      <>
+        {signInForm()}
+        {errorMsg()}
+      </>
+    );
+  } else {
+    return <Redirect to="/chatbox" />;
+  }
 };
 
 export default SignInForm;

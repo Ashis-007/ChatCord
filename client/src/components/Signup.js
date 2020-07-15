@@ -1,21 +1,17 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { TextField, Button, Typography, Snackbar } from "@material-ui/core";
+import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/database";
+import firebase from "../firebase";
 
 import UserContext from "../context/UserContext";
-import AuthContext from "../context/AuthContext";
 
 import "../css/Signup.css";
 
 const SignUpForm = (props) => {
   // Context
-  const [user, setUser] = useContext(UserContext);
-  const [isAuthenticated, setIsAuthenticated] = useContext(AuthContext);
+  const [, setUser] = useContext(UserContext);
 
   // State
   const [email, setEmail] = useState("");
@@ -25,42 +21,29 @@ const SignUpForm = (props) => {
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(true); // prop for Snackbar
 
-  const database = firebase.database();
-
-  const handleSubmit = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-    // authenticate using firebase
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(({ user }) => {
+    try {
+      const { user: currentUser } = await firebase.signup(
+        email,
+        password,
+        username
+      );
+
+      await firebase.changeDisplayName(username);
+
+      if (currentUser) {
         setError("");
         setSuccess(true);
 
-        const uid = user.uid;
-
-        // TODO: ✔ save user in DB and add user to context
-        database
-          .ref("users/" + uid)
-          .set({
-            uid,
-            username,
-            email,
-          })
-          .then((response) => console.log(response))
-          .catch((err) => console.log(err.message));
+        const uid = currentUser.uid;
+        await firebase.storeUser(uid, username, email);
         setUser({ uid, username, email });
-
-        // TODO: ✔ change isAuthenticated
-        setIsAuthenticated(true);
-
-        // Redirect to chatbox
-        props.history.push("/chatbox");
-      })
-      .catch((err) => {
-        setError(err.message);
-      });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleClose = () => {
@@ -119,56 +102,66 @@ const SignUpForm = (props) => {
     };
   }, []);
 
-  return (
-    <div className="form__container">
-      <h2 className="form__heading">Register</h2>
-      <form>
-        <div className="">
-          <label className="">Username</label>
-          <input
-            className=""
-            type="text"
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
-            required
-            placeholder="Username"
-          />
+  const signUpForm = () => {
+    return (
+      <div className="form__container">
+        <h2 className="form__heading">Register</h2>
+        <form onSubmit={handleSignup}>
+          <div className="">
+            <label className="">Username</label>
+            <input
+              className=""
+              type="text"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+              required
+              placeholder="Username"
+            />
+          </div>
+          <div className="">
+            <label className="text-light">Email</label>
+            <input
+              className=""
+              type="text"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              required
+              placeholder="Email"
+            />
+          </div>
+          <div className="form-group">
+            <label className="text-light">Password</label>
+            <input
+              className=""
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              required
+              placeholder="Password"
+            />
+          </div>
+          <button type="submit" onClick={handleSignup} className="btn submit">
+            Sign Up
+          </button>
+        </form>
+        <div className="other">
+          <p>
+            Already have an account?{" "}
+            <Link to="/signin" className="link">
+              Log in
+            </Link>
+          </p>
         </div>
-        <div className="">
-          <label className="text-light">Email</label>
-          <input
-            className=""
-            type="text"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            required
-            placeholder="Email"
-          />
-        </div>
-        <div className="form-group">
-          <label className="text-light">Password</label>
-          <input
-            className=""
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            required
-            placeholder="Password"
-          />
-        </div>
-        <button onClick={handleSubmit} className="btn submit">
-          Sign Up
-        </button>
-      </form>
-      <div className="other">
-        <p>
-          Already have an account?{" "}
-          <Link to="/signin" className="link">
-            Log in
-          </Link>
-        </p>
       </div>
-    </div>
+    );
+  };
+
+  return (
+    <>
+      {signUpForm()}
+      {successMsg()}
+      {errorMsg()}
+    </>
   );
 };
 
