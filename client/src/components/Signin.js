@@ -21,19 +21,23 @@ const SignInForm = (props) => {
 
   // const database = firebase.database();
 
-  const handleSignin = async (e) => {
+  const handleSignin = (e) => {
     e.preventDefault();
-    try {
-      const currentUser = await firebase.signin(email, password);
-      const uid = currentUser.uid;
-      const email = currentUser.email;
-      const username = currentUser.displayName;
-      setUser({ uid, email, username });
+    firebase
+      .signin(email, password)
+      .then((currentUser) => {
+        if (currentUser) {
+          const uid = currentUser.uid;
+          const username = currentUser.displayName;
+          setUser({ uid, username });
 
-      props.history.push("/chatbox");
-    } catch (error) {
-      console.log(error);
-    }
+          props.history.push("/chatbox");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        setError(error.message);
+      });
   };
 
   useEffect(() => {

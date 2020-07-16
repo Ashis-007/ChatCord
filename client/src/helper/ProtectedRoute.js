@@ -3,7 +3,7 @@ import { Route, Redirect } from "react-router-dom";
 import UserContext from "../context/UserContext";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-  const [user, setUser] = useContext(UserContext);
+  const [user] = useContext(UserContext);
 
   useEffect(() => {
     console.log(user);

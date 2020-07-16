@@ -10,11 +10,15 @@ class Firebase {
     this.db = app.database();
   }
 
-  async signin(email, password) {
-    return this.auth.signInWithEmailAndPassword(email, password);
+  signin(email, password) {
+    try {
+      return this.auth.signInWithEmailAndPassword(email, password);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  async signup(email, password, username) {
+  signup(email, password) {
     try {
       return this.auth.createUserWithEmailAndPassword(email, password);
     } catch (error) {
@@ -22,7 +26,7 @@ class Firebase {
     }
   }
 
-  async changeDisplayName(username) {
+  changeDisplayName(username) {
     return this.auth.currentUser.updateProfile({
       displayName: username,
     });

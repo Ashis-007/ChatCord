@@ -21,29 +21,28 @@ const SignUpForm = (props) => {
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(true); // prop for Snackbar
 
-  const handleSignup = async (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
 
-    try {
-      const { user: currentUser } = await firebase.signup(
-        email,
-        password,
-        username
-      );
+    firebase
+      .signup(email, password)
+      .then(({ user: currentUser }) => {
+        if (currentUser) {
+          const uid = currentUser.uid;
+          const username = currentUser.displayName;
+          setUser({ uid, username });
+          firebase.changeDisplayName(username);
 
-      await firebase.changeDisplayName(username);
-
-      if (currentUser) {
-        setError("");
-        setSuccess(true);
-
-        const uid = currentUser.uid;
-        await firebase.storeUser(uid, username, email);
-        setUser({ uid, username, email });
-      }
-    } catch (error) {
-      console.log(error);
-    }
+          props.history.push("/chatbox");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        setError(error.message);
+      })
+      .finally(() => {
+        // setError("");
+      });
   };
 
   const handleClose = () => {

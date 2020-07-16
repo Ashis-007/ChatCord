@@ -9,16 +9,14 @@ import { CircularProgress } from "@material-ui/core";
 
 const App = () => {
   const [user, setUser] = useContext(UserContext);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(true);
     firebase.auth.onAuthStateChanged((currentUser) => {
       currentUser
         ? setUser({
             uid: currentUser.uid,
             username: currentUser.displayName,
-            email: currentUser.email,
           })
         : setUser(null);
     });
@@ -30,7 +28,11 @@ const App = () => {
   }, [user]);
 
   if (isLoading) {
-    return <CircularProgress size="80" />;
+    return (
+      <div id="loader">
+        <CircularProgress />
+      </div>
+    );
   } else {
     return (
       <>
