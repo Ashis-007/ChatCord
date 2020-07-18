@@ -19,29 +19,32 @@ function ChatBox(props) {
 
   // State
   const [message, setMessage] = useState("");
+  const [typing, setTyping] = useState(false);
   const [allMessages, setAllMessages] = useState([]);
 
   useEffect(() => {
-    if (user) {
-      const textField = document.getElementById("textField");
-      const handler = () => {
-        socket.emit("typing", "An user is typing ...");
-      };
-      textField.addEventListener("keypress", handler);
+    if (message !== "") {
+      socket.emit("typing", `${user?.username} is typing...`);
+    }
+  }, [message]);
 
+  useEffect(() => {
+    if (user) {
       // listen for msgs from server
       socket.on("message", (data) => {
         console.log(data);
+        setTyping(false);
         setAllMessages((msgs) => [...msgs, data]);
       });
 
       // listen for typing events
       socket.on("typing", (msg) => {
-        // console.log(msg);
+        setTyping(msg);
+        console.log(msg);
       });
 
+      // cleanup
       return () => {
-        textField.removeEventListener("keypress", handler);
         socket.off("message");
         socket.off("typing");
         socket.disconnect();
@@ -83,6 +86,7 @@ function ChatBox(props) {
   if (user) {
     return (
       <div className="ChatBox">
+        <div className="ChatBox__info">{typing}</div>
         <div className="ChatBox__chat">
           {allMessages.map((data, index) => (
             <Message
@@ -97,7 +101,10 @@ function ChatBox(props) {
           <form onSubmit={handleSubmit}>
             <input
               placeholder="Message"
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                // emitTypingMessage(e);
+              }}
               value={message}
               id="textField"
             />

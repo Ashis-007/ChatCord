@@ -1,7 +1,7 @@
 import React from "react";
 import "../css/Message.css";
 
-const Message = ({ data, isReceived }) => {
+const Message = ({ data, isReceived, isTyping = false }) => {
   return (
     data.message && (
       <div

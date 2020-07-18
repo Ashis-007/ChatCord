@@ -22,7 +22,6 @@ io.on("connection", (socket) => {
 
   socket.on("typing", (msg) => {
     socket.broadcast.emit("typing", msg);
-    console.log("typing");
   });
 });
 
